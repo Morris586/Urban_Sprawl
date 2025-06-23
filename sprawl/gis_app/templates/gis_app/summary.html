@@ -1,0 +1,21 @@
+{% extends 'gis_app/base.html' %}
+
+{% block title %}Summary Statistics{% endblock %}
+
+{% block content %}
+<h1>Summary Statistics</h1>
+
+<h2>Urban Sprawl Data</h2>
+<ul>
+    <li><strong>Maximum Urban Area:</strong> {{ summary.urban.max }} km²</li>
+    <li><strong>Minimum Urban Area:</strong> {{ summary.urban.min }} km²</li>
+    <li><strong>Average Urban Area:</strong> {{ summary.urban.average|floatformat:2 }} km²</li>
+</ul>
+
+<h2>Deforestation Data</h2>
+<ul>
+    <li><strong>Maximum Forest Cover Loss:</strong> {{ summary.deforestation.max }} km²</li>
+    <li><strong>Minimum Forest Cover Loss:</strong> {{ summary.deforestation.min }} km²</li>
+    <li><strong>Average Forest Cover Loss:</strong> {{ summary.deforestation.average|floatformat:2 }} km²</li>
+</ul>
+{% endblock %}

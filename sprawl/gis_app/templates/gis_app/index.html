@@ -1,0 +1,102 @@
+{% extends 'gis_app/base.html' %}
+{% load static %}
+
+{% block title %}Nairobi Urban Sprawl{% endblock %}
+
+{% block content %}
+<h1>Nairobi Urban Sprawl Maps</h1>
+
+<h2>Urban Growth 2019 - 2021</h2>
+<img src="{% static 'gis_app/map_data/urbangrowth_2019_2021.png' %}" alt="Urban Growth 2019-2021" style="width:80%;">
+
+<h2>Urban Growth 2021 - 2023</h2>
+<img src="{% static 'gis_app/map_data/urbangrowth_2021_2023.png' %}" alt="Urban Growth 2021-2023" style="width:80%;">
+
+<h2>Urban Growth Nairobi (General)</h2>
+<img src="{% static 'gis_app/map_data/urbangrowth_nairobi.png' %}" alt="Urban Growth Nairobi" style="width:80%;">
+
+<h2>Forest Loss 2019 - 2021</h2>
+<img src="{% static 'gis_app/map_data/forestloss_2019_2021.png' %}" alt="Forest Loss 2019-2021" style="width:80%;">
+
+<h2>Forest Loss 2021 - 2023</h2>
+<img src="{% static 'gis_app/map_data/forestloss_2021_2023.png' %}" alt="Forest Loss 2021-2023" style="width:80%;">
+
+<hr>
+<h1>Urban Sprawl and Deforestation Metrics</h1>
+
+<h2>Urban Sprawl</h2>
+<p><strong>Total Urban Area Increase:</strong> {{ urban_totals }} km²</p>
+
+<h3>Urban Area Increase by Year</h3>
+<ul>
+    {% for year, area in urban_by_year.items %}
+    <li><strong>{{ year }}:</strong> {{ area }} km²</li>
+    {% endfor %}
+</ul>
+
+<canvas id="urbanChart" width="400" height="200"></canvas>
+
+<h2>Deforestation</h2>
+<p><strong>Total Forest Cover Loss:</strong> {{ forest_totals }} km²</p>
+
+<h3>Forest Cover Loss by Year</h3>
+<ul>
+    {% for year, area in forest_by_year.items %}
+    <li><strong>{{ year }}:</strong> {{ area }} km²</li>
+    {% endfor %}
+</ul>
+
+<canvas id="forestChart" width="400" height="200"></canvas>
+
+{{ urban_by_year|json_script:"urban-data" }}
+{{ forest_by_year|json_script:"forest-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const urbanData = JSON.parse(document.getElementById('urban-data').textContent);
+    const forestData = JSON.parse(document.getElementById('forest-data').textContent);
+
+    const urbanCtx = document.getElementById('urbanChart').getContext('2d');
+    new Chart(urbanCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(urbanData),
+            datasets: [{
+                label: 'Urban Area Increase (km²)',
+                data: Object.values(urbanData),
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const forestCtx = document.getElementById('forestChart').getContext('2d');
+    new Chart(forestCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(forestData),
+            datasets: [{
+                label: 'Forest Cover Loss (km²)',
+                data: Object.values(forestData),
+                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

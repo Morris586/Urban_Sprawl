@@ -1,0 +1,44 @@
+{% extends 'gis_app/base.html' %}
+
+{% block title %}Pollution Data{% endblock %}
+
+{% block content %}
+<h1>Pollution Data Summary</h1>
+<form method="get">
+    <input type="text" name="search" placeholder="Search by name..." value="{{ search_query }}">
+    <input type="text" name="year" placeholder="Year..." value="{{ year_filter }}">
+    <button type="submit">Apply</button>
+</form>
+
+<a href="{% url 'pollution_export' %}?search={{ search_query }}&year={{ year_filter }}">
+    <button type="button">Export CSV</button>
+</a>
+
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Air Quality Index</th>
+            <th>Waste Generation (tons/day)</th>
+            <th>Location (Lat, Long)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in pollution_data %}
+        <tr>
+            <td>{{ item.year }}</td>
+            <td>{{ item.air_quality_index }}</td>
+            <td>{{ item.waste_generation }}</td>
+            <td>{{ item.location.y }}, {{ item.location.x }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No pollution data available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

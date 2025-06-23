@@ -1,0 +1,35 @@
+{% extends 'gis_app/base.html' %}
+
+{% block content %}
+<h1>Urban Sprawl Data Summary</h1>
+
+<form method="get" class="filter-form">
+    <input type="text" name="search" placeholder="Search by name..." value="{{ search_query }}">
+    <input type="text" name="year" placeholder="Year..." value="{{ year_filter }}">
+    <button type="submit">Apply</button>
+</form>
+
+<a href="{% url 'urban_sprawl_export' %}?search={{ search_query }}&year={{ year_filter }}" class="export-button">Export
+    to CSV</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Name</th>
+            <th>Urban Area Increase (%)</th>
+            <th>Location (Lat, Long)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in urban_sprawl_data %}
+        <tr>
+            <td>{{ item.year }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.urban_area_increase }}</td>
+            <td>{{ item.location.y }}, {{ item.location.x }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
